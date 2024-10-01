@@ -1,0 +1,38 @@
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore Python cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ignore virtual environment directories
+venv/
+env/
+ENV/
+.venv/
+.env/
+
+# Ignore Jupyter Notebook metadata and other non-essential files
+*.ipynb~ 
+*.ipy
+
+# Ignore macOS system files
+.DS_Store
+
+# Ignore temporary files
+*.tmp
+*.log
+*.out
+
+# Ignore specific notebook outputs (if you want to exclude output data)
+*.csv
+*.json
+*.h5
+*.hdf5
+*.db
+
+# If you are using specific data files that shouldn't be versioned, you can ignore them
+data/
+output/
+results/
