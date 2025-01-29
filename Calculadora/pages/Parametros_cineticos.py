@@ -10,6 +10,32 @@ def get_dosis_dia(dosis, intervalo, peso):
     formula = (dosis * (24 / intervalo)) / peso
     return round(formula, 2)
 
+# Columnas para organizar la entrada de datos
+col1, col_gap, col2 = st.columns([1.5, 1, 1.5])
+
+with col1:
+    # Inputs
+    peso = st.number_input("Peso (kg)", min_value=1.0, value=70.0)
+    st.divider()
+    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
+    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
+    st.divider()
+    conc_peak = st.number_input("Concentración 1 (Peak) mcg/mL ", min_value=0.0, value=41.6)
+    conc_basal = st.number_input("Concentración 2 (Basal) mcg/mL", min_value=0.0, value=15.8)
+
+with col2:
+    # Inputs
+    talla = st.number_input("Talla (cm)", min_value=1, value=170)
+    st.divider()
+    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)        
+    dosis_kg_dia = get_dosis_dia(dosis, intervalo, peso)
+    st.write(f"Dosis(mg/kg/día): :green-background[**{dosis_kg_dia}**]")
+    st.write(" ")
+    st.divider()
+    t_ini_dosis = st.number_input("Tiempo 1 (Peak - hrs)", min_value=0.0, value=2.0)
+    t_ini_dosis_2 = st.number_input("Tiempo 2 (Basal - hrs)", min_value=0.0, value=12.0)
+
+
 def get_const_eliminacion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2):
     """Constante de eliminación"""
     formula = math.log(conc_peak / conc_basal) / (t_ini_dosis_2 - t_ini_dosis)
@@ -43,54 +69,33 @@ def get_volumen_distribucion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, 
     formula = (dosis * (1 - math.exp(-const_eliminacion * t_infusion))) / (t_infusion * const_eliminacion * (conc_max_real - conc_min_real * math.exp(-const_eliminacion * t_infusion)))
     return round(formula, 2)
 
-# Columnas para organizar la entrada de datos
-col1, col_gap, col2 = st.columns([1.5, 1, 2.5])
-
-with col1:
-    # Inputs
-    peso = st.number_input("Peso (kg)", min_value=1.0, value=70.0)
-    st.divider()
-    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
-    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
-    st.divider()
-    conc_peak = st.number_input("Concentración Peak", min_value=0.0, value=41.6)
-    conc_basal = st.number_input("Concentración Basal", min_value=0.0, value=15.8)
-
-with col2:
-    # Inputs
-    talla = st.number_input("Talla (cm)", min_value=1, value=170)
-    st.divider()
-    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)        
-    dosis_kg_dia = get_dosis_dia(dosis, intervalo, peso)
-    st.write(f"Dosis(mg/kg/día): :green-background[**{dosis_kg_dia}**]")
-    st.write(" ")
-    st.divider()
-    cim = st.number_input("Concentración mínima inhibitoria (CIM)", min_value=0.0, value=1.0)
-    t_ini_dosis = st.number_input("Tiempo inicial dosis (hrs)", min_value=0.0, value=2.0)
-    t_ini_dosis_2 = st.number_input("Tiempo final dosis (hrs)", min_value=0.0, value=12.0)
+def get_area_under_curve(t_infusion, conc_peak, conc_basal, const_eliminacion, intervalo):
+    """Área bajo la curva"""
+    formula = ((t_infusion * ((conc_peak + conc_basal)/2)) + ((conc_peak - conc_basal)/const_eliminacion)) * (24/intervalo)
+    return round(formula, 2)
 
 # Mostrar resultados en la columna inferior
+st.write(" ")
 st.header("Resultados 🧾✍🏼")
 col3, col_gap2, col4 = st.columns([1.5, 1, 2.5])
 
 with col3:
     
-    # Cálculo y visualización de la dosis diaria
-    dosis_dia = get_dosis_dia(dosis, intervalo, peso)
-    st.markdown(f"Dosis diaria: :green-background[**{dosis_dia} mg/kg/día**]")
-    
     # Cálculo y visualización de la constante de eliminación
     const_eliminacion = get_const_eliminacion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2)
-    st.markdown(f"Constante de eliminación: :green-background[**{const_eliminacion}**]")
-    
-with col4:
-    # Cálculo y visualización de la concentración máxima real
+    st.markdown(f"Constante de eliminación: :green-background[**{const_eliminacion} h-1**]")
+
     conc_max_real = get_concentracion_maxima_real(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, t_infusion)
-    st.markdown(f"Concentración máxima real: :green-background[**{conc_max_real} mg/L**]")
+    st.markdown(f"Concentración máxima real: :green-background[**{conc_max_real} mcg/mL**]")
     
     # Cálculo y visualización de la concentración mínima real
     conc_min_real = get_concentracion_minima_real(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, intervalo, t_infusion)
-    st.markdown(f"Concentración mínima real: :green-background[**{conc_min_real} mg/L**]")
+    st.markdown(f"Concentración mínima real: :green-background[**{conc_min_real} mcg/mL**]")
+    
+with col4:
+    area_bajo_curva = get_area_under_curve(t_infusion, conc_peak, conc_basal, const_eliminacion, intervalo)
+    st.markdown(f"Área bajo la curva: :green-background[**{area_bajo_curva} mg/L*hrs**]")
+
     
     # Cálculo y visualización del volumen de distribución
     vol_dist = get_volumen_distribucion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, dosis, t_infusion, intervalo)
