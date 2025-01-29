@@ -49,24 +49,25 @@ col1, col_gap, col2 = st.columns([1.5, 1, 2.5])
 with col1:
     # Inputs
     peso = st.number_input("Peso (kg)", min_value=1.0, value=70.0)
-    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
     st.divider()
-
+    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
+    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
+    st.divider()
     conc_peak = st.number_input("Concentración Peak", min_value=0.0, value=41.6)
     conc_basal = st.number_input("Concentración Basal", min_value=0.0, value=15.8)
-    t_ini_dosis = st.number_input("Tiempo inicial dosis (hrs)", min_value=0.0, value=2.0)
-    t_ini_dosis_2 = st.number_input("Tiempo final dosis (hrs)", min_value=0.0, value=12.0)
 
 with col2:
     # Inputs
     talla = st.number_input("Talla (cm)", min_value=1, value=170)
-    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)        
     st.divider()
-
-    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
-    cim = st.number_input("Concentración mínima inhibitoria (CIM)", min_value=0.0, value=1.0)
+    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)        
     dosis_kg_dia = get_dosis_dia(dosis, intervalo, peso)
-    st.markdown(f"Dosis (mg/kg/día): :green-background[**{dosis_kg_dia}**]")
+    st.write(f"Dosis(mg/kg/día): :green-background[**{dosis_kg_dia}**]")
+    st.write(" ")
+    st.divider()
+    cim = st.number_input("Concentración mínima inhibitoria (CIM)", min_value=0.0, value=1.0)
+    t_ini_dosis = st.number_input("Tiempo inicial dosis (hrs)", min_value=0.0, value=2.0)
+    t_ini_dosis_2 = st.number_input("Tiempo final dosis (hrs)", min_value=0.0, value=12.0)
 
 # Mostrar resultados en la columna inferior
 st.header("Resultados 🧾✍🏼")
