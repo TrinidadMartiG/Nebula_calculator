@@ -3,26 +3,6 @@ import math
 
 # Título de la aplicación
 st.title("Parámetros cinéticos 📈📉")
-
-# Columnas para organizar la entrada de datos
-col1, col_gap, col2 = st.columns([1.5, 1, 2.5])
-
-with col1:
-    # Inputs
-    peso = st.number_input("Peso (kg)", min_value=1.0, value=70.0)
-    talla = st.number_input("Talla (cm)", min_value=1, value=170)
-    conc_peak = st.number_input("Concentración Peak", min_value=0.0, value=41.6)
-    conc_basal = st.number_input("Concentración Basal", min_value=0.0, value=15.8)
-    t_ini_dosis = st.number_input("Tiempo inicial dosis (hrs)", min_value=0.0, value=2.0)
-    t_ini_dosis_2 = st.number_input("Tiempo final dosis (hrs)", min_value=0.0, value=12.0)
-
-with col2:
-    # Inputs
-    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)
-    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
-    cim = st.number_input("Concentración mínima inhibitoria (CIM)", min_value=0.0, value=1.0)
-    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
-
 # Funciones
 
 def get_dosis_dia(dosis, intervalo, peso):
@@ -62,6 +42,31 @@ def get_volumen_distribucion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, 
     conc_min_real = get_concentracion_minima_real(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, intervalo, t_infusion)
     formula = (dosis * (1 - math.exp(-const_eliminacion * t_infusion))) / (t_infusion * const_eliminacion * (conc_max_real - conc_min_real * math.exp(-const_eliminacion * t_infusion)))
     return round(formula, 2)
+
+# Columnas para organizar la entrada de datos
+col1, col_gap, col2 = st.columns([1.5, 1, 2.5])
+
+with col1:
+    # Inputs
+    peso = st.number_input("Peso (kg)", min_value=1.0, value=70.0)
+    dosis = st.number_input("Dosis (mg)", min_value=0, value=1000)
+    st.divider()
+
+    conc_peak = st.number_input("Concentración Peak", min_value=0.0, value=41.6)
+    conc_basal = st.number_input("Concentración Basal", min_value=0.0, value=15.8)
+    t_ini_dosis = st.number_input("Tiempo inicial dosis (hrs)", min_value=0.0, value=2.0)
+    t_ini_dosis_2 = st.number_input("Tiempo final dosis (hrs)", min_value=0.0, value=12.0)
+
+with col2:
+    # Inputs
+    talla = st.number_input("Talla (cm)", min_value=1, value=170)
+    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, value=2.0)        
+    st.divider()
+
+    intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=1, value=12)
+    cim = st.number_input("Concentración mínima inhibitoria (CIM)", min_value=0.0, value=1.0)
+    dosis_kg_dia = get_dosis_dia(dosis, intervalo, peso)
+    st.markdown(f"Dosis (mg/kg/día): :green-background[**{dosis_kg_dia}**]")
 
 # Mostrar resultados en la columna inferior
 st.header("Resultados 🧾✍🏼")
