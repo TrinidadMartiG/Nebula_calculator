@@ -6,6 +6,15 @@ st.title("Calculadora VFG 📊")
 # Inputs comunes en dos columnas
 col1, col2 = st.columns(2)
 
+def clear_inputs():
+    # Reset all input values to 0
+    st.session_state['edad'] = 0
+    st.session_state['peso'] = 0.0
+    st.session_state['talla'] = 0.0
+    st.session_state['creatinina'] = 0.0
+    st.session_state['cistatina'] = 0.0
+    st.session_state['genero'] = "masculino"
+    
 with col1:
     edad = st.number_input("Edad (años)", min_value=0, format="%d")
     peso = st.number_input("Peso (kg)", min_value=0.0, format="%.0f")
@@ -15,6 +24,8 @@ with col2:
     talla = st.number_input("Talla (cm)", min_value=0.0, format="%.0f")
     creatinina = st.number_input("Creatinina (mg/dL)", min_value=0.0, format="%.0f")
     cistatina = st.number_input("Cistatina (mg/dL)", min_value=0.0, format="%.0f", key="cistatina_input")
+
+st.button("Limpiar valores", on_click=clear_inputs, type="primary")
 
 # Constantes y variables
 DECIMALS = 1

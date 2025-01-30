@@ -24,4 +24,4 @@ import streamlit as st
 
 st.markdown("# Calculadora Clínica 🧮")
 st.markdown("Por favor, selecciona una fórmula en el menú de la izquierda para comenzar.")
-st.markdown("Desarrollado por: [Nebula CodeWorks](https://www.nebulacodeworks.io) 👩🏻‍💻🧑🏼‍💻")
+st.markdown("Desarrollado por: [Nebulabs](https://nebulabs.dev/) 👩🏻‍💻🧑🏼‍💻")
