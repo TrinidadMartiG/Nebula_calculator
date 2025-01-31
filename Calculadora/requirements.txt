@@ -1,1 +1,2 @@
 streamlit==1.37.1
+plotly==5.18.0  # or whatever version you want to use
