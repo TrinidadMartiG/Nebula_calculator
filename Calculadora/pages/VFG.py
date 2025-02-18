@@ -14,16 +14,16 @@ def clear_inputs():
     st.session_state['creatinina'] = 0.0
     st.session_state['cistatina'] = 0.0
     st.session_state['genero'] = "masculino"
-    
+
 with col1:
-    edad = st.number_input("Edad (años)", min_value=0, format="%d")
-    peso = st.number_input("Peso (kg)", min_value=0.0, format="%.0f")
-    genero = st.selectbox("Género", ["masculino", "femenino"])
+    edad = st.number_input("Edad (años)", min_value=0, value=0, step=1, format="%d", key='edad')
+    peso = st.number_input("Peso (kg)", min_value=0.0, value=0.0, step=1.0, format="%.0f", key='peso')
+    genero = st.selectbox("Género", ["masculino", "femenino"], key='genero')
 
 with col2:
-    talla = st.number_input("Talla (cm)", min_value=0.0, format="%.0f")
-    creatinina = st.number_input("Creatinina (mg/dL)", min_value=0.0, format="%.0f")
-    cistatina = st.number_input("Cistatina (mg/dL)", min_value=0.0, format="%.0f", key="cistatina_input")
+    talla = st.number_input("Talla (cm)", min_value=0.0, value=0.0, step=1.0, format="%.0f", key='talla')
+    creatinina = st.number_input("Creatinina (mg/dL)", min_value=0.0, value=0.0, step=0.01, format="%.2f", key='creatinina')
+    cistatina = st.number_input("Cistatina (mg/dL)", min_value=0.0, value=0.0, step=0.01, format="%.2f", key="cistatina")
 
 st.button("Limpiar valores", on_click=clear_inputs, type="primary")
 
@@ -137,18 +137,14 @@ if edad > 0 and peso > 0 and talla > 0 and creatinina > 0:
         vfg_no_normalizada_cistatina = get_ckd_epicrea_cys_vfg_no_norm(creatinina, cistatina, genero, edad, peso, talla)
     bis_1_resultado = bis1(creatinina, edad, genero)
 
-
 # Función para mostrar resultados con color
-def mostrar_resultado(nombre, valor):
+def mostrar_resultado(nombre, valor, unidad="mL/min/1.73m²"):
     if valor is None:
         # Texto en rojo si el valor es None
         st.markdown(f"{nombre}:  :red-background[**Sin resultado**]")
-    elif nombre == 'VFG no normalizada (CKD-EPI 2021)' or nombre == 'VFG no normalizada (CKD-EPI-cistatina 2021)':
-        # Texto en verde si el valor tiene un resultado
-        st.markdown(f"{nombre}: :green-background[**{valor} mL/min**]")
     else:
         # Texto en verde si el valor tiene un resultado
-        st.markdown(f"{nombre}: :green-background[**{valor} mL/min/1.73m²**]")
+        st.markdown(f"{nombre}: :green-background[**{valor} {unidad}**]")
 
 # Definir el diseño de subcolumnas con títulos
 st.markdown("### Cockcroft-Gault")
@@ -156,26 +152,23 @@ col_a, col_b = st.columns(2)
 with col_a:
     mostrar_resultado("Estimación de VFG", estimacion_vfg_cg)
 with col_b:
-    mostrar_resultado("Clearance de creatinina", clear_creatinina)
+    mostrar_resultado("Clearance de creatinina", clear_creatinina, "mL/min")
 
 st.markdown("### CKD-EPI Creatinina (2021)")
 col_c, col_d = st.columns(2)
 with col_c:
     mostrar_resultado("Estimación VFG", estimacion_vfg)
 with col_d:
-    mostrar_resultado("VFG no normalizada", vfg_no_normalizada)
+    mostrar_resultado("VFG no normalizada", vfg_no_normalizada, "mL/min")
 
 st.markdown("### CKD-EPI Crea-cys (2021)")
 col_e, col_f = st.columns(2)
 with col_e:
-    mostrar_resultado("VFG no normalizada", vfg_no_normalizada_cistatina)
-with col_f:
     mostrar_resultado("Estimación VFG", estimacion_vfg_cys)
+with col_f:
+    mostrar_resultado("VFG no normalizada", vfg_no_normalizada_cistatina, "mL/min")
 
 st.markdown("### BIS-1")
 col_e = st.columns(1)[0]
 with col_e:
     mostrar_resultado("VFG BIS 1", bis_1_resultado)
-
-
-

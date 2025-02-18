@@ -7,8 +7,8 @@ def clear_inputs():
     st.session_state['talla'] = 0
     st.session_state['dosis'] = 0
     st.session_state['intervalo'] = 0
-    st.session_state['conc_peak'] = 0.0
-    st.session_state['conc_basal'] = 0.0
+    st.session_state['conc_peak'] = 0.00
+    st.session_state['conc_basal'] = 0.00
     st.session_state['t_infusion'] = 0.0
     st.session_state['t_ini_dosis'] = 0.0
     st.session_state['t_ini_dosis_2'] = 0.0
@@ -32,18 +32,18 @@ def get_dosis_dia(dosis, intervalo, peso):
 col1, col_gap, col2 = st.columns([1.5, 1, 1.5])
 
 with col1:
-    peso = st.number_input("Peso (kg)", min_value=0.0, format="%.1f", key='peso')
+    peso = st.number_input("Peso (kg)", min_value=0.0, step=1.0, format="%.1f", key='peso')
     st.divider()
     dosis = st.number_input("Dosis (mg)", min_value=0, format="%d", key='dosis')
     intervalo = st.number_input("Intervalo entre dosis (hrs)", min_value=0, format="%d", key='intervalo')
     st.divider()
-    conc_peak = st.number_input("Concentración 1 (Peak) mcg/mL ", min_value=0.0, format="%.1f", key='conc_peak')
-    conc_basal = st.number_input("Concentración 2 (Basal) mcg/mL", min_value=0.0, format="%.1f", key='conc_basal')
+    conc_peak = st.number_input("Concentración 1 (Peak) mcg/mL ", min_value=0.00, step=0.01, format="%.2f", key='conc_peak')
+    conc_basal = st.number_input("Concentración 2 (Basal) mcg/mL", min_value=0.00, step=0.01, format="%.2f", key='conc_basal')
 
 with col2:
     talla = st.number_input("Talla (cm)", min_value=0, format="%d", key='talla')
     st.divider()
-    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, format="%.1f", key='t_infusion')        
+    t_infusion = st.number_input("Tiempo de infusión (hrs)", min_value=0.0, step=1.0, format="%.1f", key='t_infusion')        
     
     # Add validation before calculating dosis_kg_dia
     if intervalo != 0 and peso != 0:
@@ -53,8 +53,8 @@ with col2:
         st.write("Dosis(mg/kg/día): :red[**0**]")
     st.write(" ")
     st.divider()
-    t_ini_dosis = st.number_input("Tiempo 1 (Peak - hrs)", min_value=0.0, format="%.1f", key='t_ini_dosis')
-    t_ini_dosis_2 = st.number_input("Tiempo 2 (Basal - hrs)", min_value=0.0, format="%.1f", key='t_ini_dosis_2')
+    t_ini_dosis = st.number_input("Tiempo 1 (Peak - hrs)", min_value=0.0, step=1.0, format="%.1f", key='t_ini_dosis')
+    t_ini_dosis_2 = st.number_input("Tiempo 2 (Basal - hrs)", min_value=0.0, step=1.0, format="%.1f", key='t_ini_dosis_2')
 
 def validate_inputs():
     if (intervalo == 0 or peso == 0 or 
