@@ -136,44 +136,55 @@ def get_area_under_curve(t_infusion, conc_peak, conc_basal, const_eliminacion, i
     except Exception:
         return 0
 
-# Mostrar resultados en la columna inferior
+# Add this function before the results section
+def mostrar_resultado(nombre, valor, unidad=""):
+    if valor is None or valor == 0:
+        # Texto en rojo si el valor es None o cero
+        st.markdown(f"{nombre}: :red-background[**Sin resultado**]")
+    else:
+        # Texto en verde si el valor tiene un resultado
+        st.markdown(f"{nombre}: :green-background[**{valor} {unidad}**]")
+
+# Replace the results section with:
 st.write(" ")
 
 with st.container():
     col_title, col_button = st.columns([4, 1])
     with col_title:
-        st.header("Resultados 🧾✍🏼")
+        st.header("Resultados 🧾")
     with col_button:
         st.write(" ")
         st.button("Limpiar valores", on_click=clear_inputs, type="primary")
         
-col3, col_gap2, col4 = st.columns([1.5, 1, 2.5])
+col3, col_gap2, col4 = st.columns([1.5, 1, 1.5])
 
 with col3:
-    
-    # Cálculo y visualización de la constante de eliminación
+    # Calculate and display constant elimination
     const_eliminacion = get_const_eliminacion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2)
-    st.markdown(f"Constante de eliminación: :green-background[**{const_eliminacion} h-1**]")
+    mostrar_resultado("Constante de eliminación", const_eliminacion, "h-1")
 
+    # Calculate and display real maximum concentration
     conc_max_real = get_concentracion_maxima_real(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, t_infusion)
-    st.markdown(f"Concentración máxima real: :green-background[**{conc_max_real} mcg/mL**]")
+    mostrar_resultado("Concentración máxima real", conc_max_real, "mcg/mL")
     
-    # Cálculo y visualización de la concentración mínima real
+    # Calculate and display real minimum concentration
     conc_min_real = get_concentracion_minima_real(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, intervalo, t_infusion)
-    st.markdown(f"Concentración mínima real: :green-background[**{conc_min_real} mcg/mL**]")
+    mostrar_resultado("Concentración mínima real", conc_min_real, "mcg/mL")
     
-# And in your results section, add validation before displaying:
 with col4:
-    if validate_inputs():  # Make sure all required values are non-zero
+    if validate_inputs():
+        # Calculate and display area under curve
         area_bajo_curva = get_area_under_curve(t_infusion, conc_peak, conc_basal, const_eliminacion, intervalo)
-        st.markdown(f"Área bajo la curva: :green-background[**{area_bajo_curva} mg/L*hrs**]")
+        mostrar_resultado("Área bajo la curva", area_bajo_curva, "mg/L*hrs")
         
+        # Calculate and display distribution volume
         vol_dist = get_volumen_distribucion(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, dosis, t_infusion, intervalo)
-        st.markdown(f"Volumen de distribución : :green-background[**{vol_dist} L**]")
+        mostrar_resultado("Volumen de distribución", vol_dist, "L")
         
+        # Calculate and display drug clearance
         aclaramiento = get_aclaramiento_medicamento(conc_peak, conc_basal, t_ini_dosis, t_ini_dosis_2, dosis, t_infusion, intervalo)
-        st.markdown(f"Aclaramiento del medicamento: :green-background[**{aclaramiento} L/h**]")
+        mostrar_resultado("Aclaramiento del medicamento", aclaramiento, "L/h")
     else:
-        st.markdown("Área bajo la curva: :red[**0 mg/L*hrs**]")
-        st.markdown("Volumen de distribución : :red[**0 L**]")
-        st.markdown("Aclaramiento del medicamento: :red[**0 L/h**]")
+        mostrar_resultado("Área bajo la curva", None)
+        mostrar_resultado("Volumen de distribución", None)
+        mostrar_resultado("Aclaramiento del medicamento", None)
