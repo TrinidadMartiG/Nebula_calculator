@@ -127,14 +127,15 @@ clear_creatinina  = estimacion_vfg_cg = estimacion_vfg = estimacion_vfg_cys = vf
 
 # Verificación de condiciones y cálculos
 if edad > 0 and peso > 0 and talla > 0 and creatinina > 0:
-    if edad <= 70:
-        clear_creatinina = get_cg_clearance_creatinina(edad, peso, talla, genero, creatinina)
-        estimacion_vfg_cg = get_cg_estimacion_vfg(edad, peso, talla, genero, creatinina)
+    clear_creatinina = get_cg_clearance_creatinina(edad, peso, talla, genero, creatinina)
+    estimacion_vfg_cg = get_cg_estimacion_vfg(edad, peso, talla, genero, creatinina)
+    
     vfg_no_normalizada = get_vfg_no_normalizada(creatinina, genero, edad, peso, talla)
     estimacion_vfg = get_cdk_epicreatinina_2021(creatinina, genero, edad)
     estimacion_vfg_cys = get_ckd_epicrea_cys_2021(creatinina, cistatina, genero, edad)
     if cistatina > 0:
         vfg_no_normalizada_cistatina = get_ckd_epicrea_cys_vfg_no_norm(creatinina, cistatina, genero, edad, peso, talla)
+if edad <= 70:
     bis_1_resultado = bis1(creatinina, edad, genero)
 
 # Función para mostrar resultados con color
