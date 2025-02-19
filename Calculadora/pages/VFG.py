@@ -33,9 +33,14 @@ DECIMALS = 1
 # Funciones de cálculo
 def bis1(creatinina, edad, genero):
     """ VFG BIS 1"""
-    multi_genero = 1 if genero == "masculino" else 0.82
-    formula = 3736 * (creatinina ** -0.87) * (edad ** -0.95) * multi_genero
-    return round(formula, 1)
+    try:
+        if creatinina <= 0 or edad <= 0:
+            return None
+        multi_genero = 1 if genero == "masculino" else 0.82
+        formula = 3736 * (creatinina ** -0.87) * (edad ** -0.95) * multi_genero
+        return round(formula, 1)
+    except:
+        return None
 
 def get_peso_magro(genero, peso, imc):
     if genero == "masculino":
@@ -135,8 +140,9 @@ if edad > 0 and peso > 0 and talla > 0 and creatinina > 0:
     estimacion_vfg_cys = get_ckd_epicrea_cys_2021(creatinina, cistatina, genero, edad)
     if cistatina > 0:
         vfg_no_normalizada_cistatina = get_ckd_epicrea_cys_vfg_no_norm(creatinina, cistatina, genero, edad, peso, talla)
-if edad <= 70:
-    bis_1_resultado = bis1(creatinina, edad, genero)
+    # BIS-1 solo para pacientes <= 70 años
+    if edad <= 70 and creatinina > 0:
+        bis_1_resultado = bis1(creatinina, edad, genero)
 
 # Función para mostrar resultados con color
 def mostrar_resultado(nombre, valor, unidad="mL/min/1.73m²"):
