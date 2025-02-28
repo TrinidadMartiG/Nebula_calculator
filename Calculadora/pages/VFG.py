@@ -141,7 +141,7 @@ if edad > 0 and peso > 0 and talla > 0 and creatinina > 0:
     if cistatina > 0:
         vfg_no_normalizada_cistatina = get_ckd_epicrea_cys_vfg_no_norm(creatinina, cistatina, genero, edad, peso, talla)
     # BIS-1 solo para pacientes <= 70 años
-    if edad <= 70 and creatinina > 0:
+    if edad >= 70 and creatinina > 0:
         bis_1_resultado = bis1(creatinina, edad, genero)
 
 # Función para mostrar resultados con color
