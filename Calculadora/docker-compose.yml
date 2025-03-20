@@ -1,0 +1,11 @@
+version: "3"
+services:
+  calculadora:
+    build:
+      context: .
+    working_dir: /app/Calculadora  # Match Dockerfile WORKDIR
+    volumes:
+      - ./:/app/Calculadora  # Mount to same path as in container
+    ports:
+      - "8501:8501"
+    command: streamlit run Home.py
